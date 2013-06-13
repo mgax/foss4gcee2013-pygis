@@ -4,6 +4,7 @@ from decimal import Decimal as D
 import ogr
 import osr
 import pyproj
+import shapely.wkt
 
 
 MAX_LAZINESS_DISTANCE = 50000  # 50 Km
@@ -178,6 +179,24 @@ def copy_parks_with_visitors(natparks_layer,
     print 'copy done'
 
 
+def calculate_borders(in_layer, out_layer):
+    out_layer_defn = out_layer.GetLayerDefn()
+    for a in range(in_layer.GetFeatureCount()):
+        for b in range(a+1, in_layer.GetFeatureCount()):
+            feature_a = in_layer.GetFeature(a)
+            geom_a = shapely.wkt.loads(feature_a.GetGeometryRef().ExportToWkt())
+            feature_b = in_layer.GetFeature(b)
+            geom_b = shapely.wkt.loads(feature_b.GetGeometryRef().ExportToWkt())
+            common_border = geom_a.intersection(geom_b)
+            if common_border.is_empty:
+                continue
+            wkt = shapely.wkt.dumps(common_border)
+            out_feature = ogr.Feature(out_layer_defn)
+            out_feature.SetGeometry(ogr.CreateGeometryFromWkt(wkt))
+            out_layer.CreateFeature(out_feature)
+        break
+
+
 def main():
     # calculate centroids & bounding boxes for cities
     cities = ogr.Open('shapes/ro_city_census.shp')
@@ -240,6 +259,17 @@ def main():
                              park_visitors)
     natpark_visitors.Destroy()
     natparks.Destroy()
+
+    # extract county borders
+    counties = ogr.Open('shapes/judete_ro.shp')
+    counties_layer = counties.GetLayer(0)
+    borders_path = 'shapes/county_borders.shp'
+    cleanup_shapefile(borders_path)
+    borders = shp_driver.CreateDataSource(borders_path)
+    borders_layer = borders.CreateLayer('layer', stereo70)
+    calculate_borders(counties_layer, borders_layer)
+    borders.Destroy()
+    counties.Destroy()
 
     print 'were done here!'
 
