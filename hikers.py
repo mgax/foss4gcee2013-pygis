@@ -176,14 +176,12 @@ def main():
     # calculate centroids for natparks
     natparks = ogr.Open('shapes/ro_nat_park.shp')
     natparks_layer = natparks.GetLayer(0)
-
     natpark_centroids_path = 'shapes/natpark_centroids.shp'
     cleanup_shapefile(natpark_centroids_path)
     natpark_centroids = shp_driver.CreateDataSource(natpark_centroids_path)
     natpark_centroids_layer = natpark_centroids.CreateLayer('layer', stereo70)
     calculate_centroids(natparks_layer, natpark_centroids_layer)
     natpark_centroids.Destroy()
-
     natparks.Destroy()
 
     # calculate distances between cities and nearby natural parks
@@ -191,18 +189,17 @@ def main():
     city_centroids_layer = city_centroids.GetLayer(0)
     natpark_centroids = ogr.Open('shapes/natpark_centroids.shp')
     natpark_centroids_layer = natpark_centroids.GetLayer(0)
-
     flux_path = 'shapes/flux.shp'
     cleanup_shapefile(flux_path)
     flux = shp_driver.CreateDataSource(flux_path)
     flux_layer = flux.CreateLayer('layer', stereo70)
-
     park_visitors = calculate_nearby_parks_for_cities(
         city_centroids_layer,
         natpark_centroids_layer,
         flux_layer)
-
     flux.Destroy()
+    natpark_centroids.Destroy()
+    city_centroids.Destroy()
 
     # calculate natural park visitor density
 
