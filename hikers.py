@@ -1,4 +1,5 @@
 import os
+from collections import defaultdict
 import ogr
 import osr
 import pyproj
@@ -98,6 +99,8 @@ def calculate_nearby_parks_for_cities(city_centroids_layer,
     flux_layer.CreateField(ogr.FieldDefn('people', ogr.OFTReal))
     flux_layer_defn = flux_layer.GetLayerDefn()
 
+    park_visitors = defaultdict(int)
+
     city_centroid = city_centroids_layer.GetNextFeature()
     while city_centroid is not None:
         city_geom = city_centroid.GetGeometryRef()
@@ -128,7 +131,7 @@ def calculate_nearby_parks_for_cities(city_centroids_layer,
         if nearby_parks:  # do people have a park nearby?
             population = city_centroid.GetField('total_locu')
             hiker_population = population * HIKER_FRACTION
-            people_per_park = hiker_population / len(nearby_parks)
+            people_per_park = int(hiker_population / len(nearby_parks))
             for park_info in nearby_parks:
                 line_feature = ogr.Feature(flux_layer_defn)
                 line_feature.SetField('from', park_info['from'])
@@ -140,9 +143,12 @@ def calculate_nearby_parks_for_cities(city_centroids_layer,
                 line.AddPoint(*park_info['coords'])
                 line_feature.SetGeometry(line)
                 flux_layer.CreateFeature(line_feature)
+                park_visitors[park_info['to']] += people_per_park
 
         natpark_centroids_layer.ResetReading()
         city_centroid = city_centroids_layer.GetNextFeature()
+
+    return dict(park_visitors)
 
 
 def main():
@@ -191,9 +197,10 @@ def main():
     flux = shp_driver.CreateDataSource(flux_path)
     flux_layer = flux.CreateLayer('layer', stereo70)
 
-    calculate_nearby_parks_for_cities(city_centroids_layer,
-                                      natpark_centroids_layer,
-                                      flux_layer)
+    park_visitors = calculate_nearby_parks_for_cities(
+        city_centroids_layer,
+        natpark_centroids_layer,
+        flux_layer)
 
     flux.Destroy()
 
