@@ -1,5 +1,6 @@
 import os
 from collections import defaultdict
+from decimal import Decimal as D
 import ogr
 import osr
 import pyproj
@@ -121,8 +122,8 @@ def calculate_nearby_parks_for_cities(city_centroids_layer,
             if distance < MAX_LAZINESS_DISTANCE:
                 nearby_parks.append({
                     'coords': natpark_geom_stereo70,
-                    'from': city_centroid.GetField('uat_name_n').title(),
-                    'to': natpark_centroid.GetField('nume').title(),
+                    'from': city_centroid.GetField('uat_name_n'),
+                    'to': natpark_centroid.GetField('nume'),
                     'distance': distance,
                 })
 
@@ -149,6 +150,32 @@ def calculate_nearby_parks_for_cities(city_centroids_layer,
         city_centroid = city_centroids_layer.GetNextFeature()
 
     return dict(park_visitors)
+
+
+def copy_parks_with_visitors(natparks_layer,
+                             natpark_visitors_layer,
+                             park_visitors):
+    natpark_visitors_layer.CreateField(ogr.FieldDefn('visitors', ogr.OFTInteger))
+    natpark_visitors_layer.CreateField(ogr.FieldDefn('density', ogr.OFTReal))
+    natpark_visitors_layer.CreateField(ogr.FieldDefn('name', ogr.OFTString))
+    natparks_layer_defn = natparks_layer.GetLayerDefn()
+    natpark = natparks_layer.GetNextFeature()
+    natpark_visitors_layer_defn = natpark_visitors_layer.GetLayerDefn()
+    while natpark is not None:
+        out_feature = ogr.Feature(natpark_visitors_layer_defn)
+        name = natpark.GetField('nume')
+        natpark_geom = natpark.GetGeometryRef()
+        area = natpark_geom.Area()
+        people = park_visitors.get(name, 0)
+        density = float(D(people / (area / 10**6)).quantize(D('.01')))
+        out_feature.SetField('name', name)
+        out_feature.SetField('visitors', people)
+        out_feature.SetField('density', density)
+        out_feature.SetField('name', name)
+        out_feature.SetGeometry(natpark_geom)
+        natpark_visitors_layer.CreateFeature(out_feature)
+        natpark = natparks_layer.GetNextFeature()
+    print 'copy done'
 
 
 def main():
@@ -201,9 +228,19 @@ def main():
     natpark_centroids.Destroy()
     city_centroids.Destroy()
 
-    # calculate natural park visitor density
+    # crete a new natparks layer, with number of visitors in each park
+    natparks = ogr.Open('shapes/ro_nat_park.shp')
+    natparks_layer = natparks.GetLayer(0)
+    natpark_visitors_path = 'shapes/natpark_visitors.shp'
+    cleanup_shapefile(natpark_visitors_path)
+    natpark_visitors = shp_driver.CreateDataSource(natpark_visitors_path)
+    natpark_visitors_layer = natpark_visitors.CreateLayer('layer', stereo70)
+    copy_parks_with_visitors(natparks_layer,
+                             natpark_visitors_layer,
+                             park_visitors)
+    natpark_visitors.Destroy()
+    natparks.Destroy()
 
-    #center = ogr.Geometry(ogr.wkbPoint)
     print 'were done here!'
 
 
