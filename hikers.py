@@ -5,6 +5,7 @@ import ogr
 import osr
 import pyproj
 import shapely.wkt
+import psycopg2
 
 
 MAX_LAZINESS_DISTANCE = 50000  # 50 Km
@@ -197,6 +198,14 @@ def calculate_borders(in_layer, out_layer):
         break
 
 
+def postgis_query():
+    conn = psycopg2.connect(dbname='natural_earth2', user='user')
+    cursor = conn.cursor()
+    cursor.execute("SELECT name,ST_AsText(ST_Centroid(the_geom)) FROM ne_10m_admin_1_states_provinces_shp WHERE iso_a2='RO'")
+    for row in cursor:
+        print row
+
+
 def main():
     # calculate centroids & bounding boxes for cities
     cities = ogr.Open('shapes/ro_city_census.shp')
@@ -260,20 +269,21 @@ def main():
     natpark_visitors.Destroy()
     natparks.Destroy()
 
-    # extract county borders
-    counties = ogr.Open('shapes/judete_ro.shp')
-    counties_layer = counties.GetLayer(0)
-    borders_path = 'shapes/county_borders.shp'
-    cleanup_shapefile(borders_path)
-    borders = shp_driver.CreateDataSource(borders_path)
-    borders_layer = borders.CreateLayer('layer', stereo70)
-    calculate_borders(counties_layer, borders_layer)
-    borders.Destroy()
-    counties.Destroy()
+#    # extract county borders
+#    counties = ogr.Open('shapes/judete_ro.shp')
+#    counties_layer = counties.GetLayer(0)
+#    borders_path = 'shapes/county_borders.shp'
+#    cleanup_shapefile(borders_path)
+#    borders = shp_driver.CreateDataSource(borders_path)
+#    borders_layer = borders.CreateLayer('layer', stereo70)
+#    calculate_borders(counties_layer, borders_layer)
+#    borders.Destroy()
+#    counties.Destroy()
 
     print 'were done here!'
 
 
 if __name__ == '__main__':
-    main()
+    postgis_query()
+    #main()
 
