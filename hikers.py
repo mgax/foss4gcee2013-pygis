@@ -283,7 +283,21 @@ def main():
     print 'were done here!'
 
 
+def workshop():
+    # calculate centroids & bounding boxes for cities
+    cities = ogr.Open('input/ro_cities.shp')
+    cities_layer = cities.GetLayer(0)
+
+    for i in range(cities_layer.GetFeatureCount()):
+        city = cities_layer.GetFeature(i)
+        print city.GetField('uat_name_n')
+
+    cities.Destroy()
+    print 'done'
+
+
 if __name__ == '__main__':
-    postgis_query()
+    #postgis_query()
     #main()
+    workshop()
 
