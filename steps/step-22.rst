@@ -1,5 +1,5 @@
-Step 22
-=======
+Step C2 - calculate density
+===========================
 Calculate hiker density for each park.
 
 ::

@@ -1,5 +1,5 @@
-Step 12
-=======
+Step B2 - intersect using Shapely
+=================================
 Intersect polygons using Shapely.
 
 ::

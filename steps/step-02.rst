@@ -1,5 +1,5 @@
-Step 2
-======
+Step A2 - read CSV data for population
+======================================
 Load CSV data.
 
 ::

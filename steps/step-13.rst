@@ -1,5 +1,5 @@
-Step 13
-=======
+Step B3 - save borders
+======================
 Save borders to shapefile.
 
 ::

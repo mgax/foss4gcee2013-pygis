@@ -1,5 +1,5 @@
-Step 1
-======
+Step A1 - read city polygons
+============================
 Load city shapefile; print names. Use separate function to keep the code
 readable later on.
 

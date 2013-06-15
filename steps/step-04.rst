@@ -1,5 +1,5 @@
-Step 4
-======
+Step A4 - park centroids
+========================
 Calculate and store park centroids.
 
 ::

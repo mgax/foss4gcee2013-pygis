@@ -1,5 +1,5 @@
-Step 7
-======
+Step A7 - save hiker trails
+===========================
 Save hiker lines as shapefile.
 
 ::

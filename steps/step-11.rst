@@ -1,5 +1,5 @@
-Step 11
-=======
+Step B1 - load from PostGIS
+===========================
 Load data from PostGIS.
 
 ::

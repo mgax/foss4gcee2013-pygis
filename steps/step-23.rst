@@ -1,5 +1,5 @@
-Step 23
-=======
+Step C3 - save layer with density data
+======================================
 Save layer with park densities.
 
 ::

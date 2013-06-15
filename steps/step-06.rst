@@ -1,6 +1,6 @@
-Step 6
-======
-Calculate where people go hiking.
+Step A6 - count hikers
+======================
+Count how many people go hiking from each city to each park.
 
 ::
 

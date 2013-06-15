@@ -1,5 +1,5 @@
-Step 3
-======
+Step A3 - join with population
+==============================
 Join cities with population data.
 
 ::

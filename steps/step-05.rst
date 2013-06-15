@@ -1,5 +1,5 @@
-Step 5
-======
+Step A5 - filter by distance
+============================
 Calculate distances; only print nearby parks.
 
 ::
