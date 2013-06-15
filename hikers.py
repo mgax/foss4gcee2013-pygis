@@ -397,7 +397,6 @@ def calculate_borders(borders_layer):
 
 
 def main():
-    # calculate centroids & bounding boxes for cities
     population = load_population_data()
     parks_data = load_parks_data()
     max_distance = int(sys.argv[1])
@@ -410,7 +409,7 @@ def main():
     cities_layer = cities.GetLayer(0)
     flux = shp_driver.CreateDataSource('output/flux.shp')
     flux_layer = flux.CreateLayer('layer', wgs84)
-    flux_layer.CreateField(ogr.FieldDefn('people', ogr.OFTReal))
+    flux_layer.CreateField(ogr.FieldDefn('people', ogr.OFTInteger))
     hikers = calculate_hikers(cities_layer, flux_layer, population, parks_data,
                               max_distance)
     flux.Destroy()
