@@ -393,6 +393,8 @@ def calculate_borders(borders_layer):
             border_feature.SetGeometry(ogr.CreateGeometryFromWkt(wkt))
             borders_layer.CreateFeature(border_feature)
 
+    conn.close()
+
 
 def main():
     # calculate centroids & bounding boxes for cities
