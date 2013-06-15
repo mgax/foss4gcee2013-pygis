@@ -294,10 +294,7 @@ def load_population_data():
     return population
 
 
-def main():
-    # calculate centroids & bounding boxes for cities
-    population = load_population_data()
-
+def load_parks_data():
     parks = ogr.Open('input/ro_natparks.shp')
     parks_layer = parks.GetLayer(0)
     parks_data = []
@@ -310,6 +307,14 @@ def main():
             'name': park.GetField('nume'),
         })
     parks.Destroy()
+    return parks_data
+
+
+def main():
+    # calculate centroids & bounding boxes for cities
+    population = load_population_data()
+
+    parks_data = load_parks_data()
 
     if os.path.isdir('output'):
         shutil.rmtree('output')
