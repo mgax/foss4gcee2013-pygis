@@ -2,6 +2,7 @@ import os
 import csv
 from collections import defaultdict
 from decimal import Decimal as D
+import shutil
 import ogr
 import osr
 import pyproj
@@ -300,6 +301,11 @@ def workshop():
     cities_layer = cities.GetLayer(0)
     parks = ogr.Open('input/ro_natparks.shp')
     parks_layer = parks.GetLayer(0)
+    if os.path.isdir('output'):
+        shutil.rmtree('output')
+    os.mkdir('output')
+    flux = shp_driver.CreateDataSource('output/flux.shp')
+    flux_layer = flux.CreateLayer('layer', wgs84)
 
     for i in range(cities_layer.GetFeatureCount()):
         city = cities_layer.GetFeature(i)
@@ -307,7 +313,7 @@ def workshop():
         city_geom = city.GetGeometryRef()
         city_centroid = city_geom.Centroid()
         city_centroid.Transform(stereo70_to_wgs84)
-        print city.GetField('uat_name_n'), city_population, city_centroid
+        #print city.GetField('uat_name_n'), city_population, city_centroid
 
         for j in range(parks_layer.GetFeatureCount()):
             park = parks_layer.GetFeature(j)
@@ -320,8 +326,11 @@ def workshop():
                 park_centroid.GetX(), park_centroid.GetY())
 
             if distance < MAX_LAZINESS_DISTANCE:
-                print '-->', park.GetField('nume'), park_centroid
+                #print '-->', park.GetField('nume'), park_centroid
+                pass
 
+    flux.Destroy()
+    parks.Destroy()
     cities.Destroy()
     print 'done'
 
