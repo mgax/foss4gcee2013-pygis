@@ -1,6 +1,10 @@
 Step A4 - park centroids
 ========================
-Calculate and store park centroids.
+Calculate and store park centroids in memory. The parks shapefile is
+projected in `stereo70`, aka `EPSG:31700`_, the Romanian national
+projection, so we'll transform it to `wgs84`.
+
+.. _`EPSG:31700`: http://spatialreference.org/ref/epsg/31700/
 
 .. code:: python
 

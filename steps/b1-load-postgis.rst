@@ -1,6 +1,10 @@
 Step B1 - load from PostGIS
 ===========================
-Load data from PostGIS.
+Load data from PostGIS. We only print the first 30 characters of each
+geometry since they are quite long. The geometries are fetched as plain
+strings in the `WKT format`_ (well-known text).
+
+.. _wkt format: http://en.wikipedia.org/wiki/Well-known_text
 
 .. code:: python
 

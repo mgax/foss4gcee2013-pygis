@@ -1,6 +1,7 @@
 Step B2 - intersect using Shapely
 =================================
-Intersect polygons using Shapely.
+Intersect polygons using Shapely. We load and save data using the WKT
+format.
 
 .. code:: python
 

@@ -1,6 +1,8 @@
 Step C3 - save layer with density data
 ======================================
-Save layer with park densities.
+Save layer with park densities. Since our input data is projected as
+`stereo70` and we don't modify the geometries then we need to declare
+the output layer as `stereo70` too.
 
 .. code:: python
 

@@ -1,6 +1,8 @@
 Step A6 - count hikers
 ======================
-Count how many people go hiking from each city to each park.
+Count how many people go hiking from each city to each park. The total
+number of hikers per city is fixed, and is divided by the number of
+nearby parks.
 
 .. code:: python
 

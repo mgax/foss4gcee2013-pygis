@@ -1,6 +1,7 @@
 Step A7 - save hiker trails
 ===========================
-Save hiker lines as shapefile.
+Save hiker lines as shapefile. Some cities have no parks nearby so we
+need to avoid dividing by zero.
 
 .. code:: python
 

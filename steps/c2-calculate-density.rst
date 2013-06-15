@@ -1,6 +1,8 @@
 Step C2 - calculate density
 ===========================
-Calculate hiker density for each park.
+Calculate hiker density (people per square kilometer) for each park. We
+make use of the fact that `stereo70` coordinates are measured in meters;
+the calculated area is good enough for our purpose.
 
 .. code:: python
 

@@ -1,6 +1,6 @@
 Step A5 - filter by distance
 ============================
-Calculate distances; only print nearby parks.
+Calculate geodetic distances; only print nearby parks.
 
 .. code:: python
 
@@ -10,7 +10,6 @@ Calculate distances; only print nearby parks.
     def calculate_hikers(cities_layer, population, parks_data):
         max_distance = 50000  # 50 Km
         for i in range(cities_layer.GetFeatureCount()):
-            city = cities_layer.GetFeature(i)
             # ...
             city_centroid = city_geom.Centroid()
             city_centroid.Transform(stereo70_to_wgs84)
