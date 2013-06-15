@@ -301,9 +301,14 @@ def workshop():
             park = parks_layer.GetFeature(j)
             park_centroid = park.GetGeometryRef().Centroid()
             park_centroid.Transform(stereo70_to_wgs84)
-            print park.GetField('nume'), park_centroid
-            break
-        break
+
+
+            (angle1, angle2, distance) = geod.inv(
+                city_centroid.GetX(), city_centroid.GetY(),
+                park_centroid.GetX(), park_centroid.GetY())
+
+            if distance < MAX_LAZINESS_DISTANCE:
+                print '-->', park.GetField('nume'), park_centroid
 
     cities.Destroy()
     print 'done'
