@@ -108,7 +108,7 @@ def calculate_borders(borders_layer):
     cursor = conn.cursor()
     cursor.execute("SELECT name,ST_AsText(the_geom) "
                    "FROM ne_10m_admin_1_states_provinces_shp "
-                   "WHERE iso_a2='RO'")
+                   "WHERE iso_a2 = %s", ["RO"])
     geometries = []
     for row in cursor:
         geom = shapely.wkt.loads(row[1])
