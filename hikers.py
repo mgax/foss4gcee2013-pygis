@@ -287,11 +287,23 @@ def workshop():
     # calculate centroids & bounding boxes for cities
     cities = ogr.Open('input/ro_cities.shp')
     cities_layer = cities.GetLayer(0)
+    parks = ogr.Open('input/ro_natparks.shp')
+    parks_layer = parks.GetLayer(0)
 
     for i in range(cities_layer.GetFeatureCount()):
         city = cities_layer.GetFeature(i)
         city_geom = city.GetGeometryRef()
-        print city.GetField('uat_name_n'), city_geom.Centroid()
+        city_centroid = city_geom.Centroid()
+        city_centroid.Transform(stereo70_to_wgs84)
+        print city.GetField('uat_name_n'), city_centroid
+
+        for j in range(parks_layer.GetFeatureCount()):
+            park = parks_layer.GetFeature(j)
+            park_centroid = park.GetGeometryRef().Centroid()
+            park_centroid.Transform(stereo70_to_wgs84)
+            print park.GetField('nume'), park_centroid
+            break
+        break
 
     cities.Destroy()
     print 'done'
