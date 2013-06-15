@@ -294,7 +294,7 @@ def load_population_data():
     return population
 
 
-def workshop():
+def main():
     # calculate centroids & bounding boxes for cities
     population = load_population_data()
 
@@ -360,6 +360,5 @@ def workshop():
 
 if __name__ == '__main__':
     #postgis_query()
-    #main()
-    workshop()
+    main()
 
