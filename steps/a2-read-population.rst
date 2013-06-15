@@ -3,6 +3,9 @@ Step A2 - read CSV data for population
 Load CSV data. We receive strings, and need to perform conversion to
 integers. `population` is a `dict` object, basically a hash table.
 
+``population.csv`` was downloaded from
+http://despresate.strainu.ro/data/demografie.csv
+
 .. code:: python
 
     import csv
