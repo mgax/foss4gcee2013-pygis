@@ -1,4 +1,5 @@
 import os
+import csv
 from collections import defaultdict
 from decimal import Decimal as D
 import ogr
@@ -283,8 +284,18 @@ def main():
     print 'were done here!'
 
 
+def load_population_data():
+    population = {}
+    with open('input/population.csv') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            population[row['siruta']] = int(row['populatie'])
+    return population
+
+
 def workshop():
     # calculate centroids & bounding boxes for cities
+    population = load_population_data()
     cities = ogr.Open('input/ro_cities.shp')
     cities_layer = cities.GetLayer(0)
     parks = ogr.Open('input/ro_natparks.shp')
