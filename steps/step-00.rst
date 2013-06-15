@@ -1,6 +1,7 @@
 Step 0
 ======
-"Hello world" program.
+"Hello world" program. Save the text in a file named ``hikers.py`` and run
+it with ``python hikers.py`` from the command-line.
 
 ::
 
