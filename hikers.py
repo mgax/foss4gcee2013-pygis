@@ -297,10 +297,22 @@ def load_population_data():
 def workshop():
     # calculate centroids & bounding boxes for cities
     population = load_population_data()
-    cities = ogr.Open('input/ro_cities.shp')
-    cities_layer = cities.GetLayer(0)
+
     parks = ogr.Open('input/ro_natparks.shp')
     parks_layer = parks.GetLayer(0)
+    parks_data = []
+    for i in range(parks_layer.GetFeatureCount()):
+        park = parks_layer.GetFeature(i)
+        park_centroid = park.GetGeometryRef().Centroid()
+        park_centroid.Transform(stereo70_to_wgs84)
+        parks_data.append({
+            'centroid': park_centroid,
+            'name': park.GetField('nume'),
+        })
+    parks.Destroy()
+
+    cities = ogr.Open('input/ro_cities.shp')
+    cities_layer = cities.GetLayer(0)
     if os.path.isdir('output'):
         shutil.rmtree('output')
     os.mkdir('output')
@@ -313,24 +325,17 @@ def workshop():
         city_geom = city.GetGeometryRef()
         city_centroid = city_geom.Centroid()
         city_centroid.Transform(stereo70_to_wgs84)
-        #print city.GetField('uat_name_n'), city_population, city_centroid
-
-        for j in range(parks_layer.GetFeatureCount()):
-            park = parks_layer.GetFeature(j)
-            park_centroid = park.GetGeometryRef().Centroid()
-            park_centroid.Transform(stereo70_to_wgs84)
-
-
+        print city.GetField('uat_name_n'), city_population, city_centroid
+        for park in parks_data:
+            park_centroid = park['centroid']
             (angle1, angle2, distance) = geod.inv(
                 city_centroid.GetX(), city_centroid.GetY(),
                 park_centroid.GetX(), park_centroid.GetY())
 
             if distance < MAX_LAZINESS_DISTANCE:
-                #print '-->', park.GetField('nume'), park_centroid
-                pass
+                print '-->', park['name'], park_centroid
 
     flux.Destroy()
-    parks.Destroy()
     cities.Destroy()
     print 'done'
 
