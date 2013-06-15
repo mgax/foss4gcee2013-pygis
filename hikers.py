@@ -289,7 +289,7 @@ def load_population_data():
     with open('input/population.csv') as f:
         reader = csv.DictReader(f)
         for row in reader:
-            population[row['siruta']] = int(row['populatie'])
+            population[int(row['siruta'])] = int(row['populatie'])
     return population
 
 
@@ -303,10 +303,11 @@ def workshop():
 
     for i in range(cities_layer.GetFeatureCount()):
         city = cities_layer.GetFeature(i)
+        city_population = population[city.GetField('siruta')]
         city_geom = city.GetGeometryRef()
         city_centroid = city_geom.Centroid()
         city_centroid.Transform(stereo70_to_wgs84)
-        print city.GetField('uat_name_n'), city_centroid
+        print city.GetField('uat_name_n'), city_population, city_centroid
 
         for j in range(parks_layer.GetFeatureCount()):
             park = parks_layer.GetFeature(j)
