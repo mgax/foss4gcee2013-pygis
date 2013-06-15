@@ -345,6 +345,31 @@ def calculate_hikers(cities_layer, flux_layer, population, parks_data,
                 flux_layer.CreateFeature(line_feature)
 
 
+def calculate_borders(borders_layer):
+    conn = psycopg2.connect(dbname='natural_earth2', user='user')
+    cursor = conn.cursor()
+    cursor.execute("SELECT name,ST_AsText(the_geom) "
+                   "FROM ne_10m_admin_1_states_provinces_shp "
+                   "WHERE iso_a2='RO'")
+    geometries = []
+    for row in cursor:
+        geom = shapely.wkt.loads(row[1])
+        geometries.append(geom)
+
+    borders_layer_defn = borders_layer.GetLayerDefn()
+    for a, geom_a in enumerate(geometries):
+        for b, geom_b in enumerate(geometries):
+            if b <= a:
+                continue
+            common_border = geom_a.intersection(geom_b)
+            if common_border.is_empty:
+                continue
+            wkt = shapely.wkt.dumps(common_border)
+            border_feature = ogr.Feature(borders_layer_defn)
+            border_feature.SetGeometry(ogr.CreateGeometryFromWkt(wkt))
+            borders_layer.CreateFeature(border_feature)
+
+
 def main():
     # calculate centroids & bounding boxes for cities
     population = load_population_data()
@@ -366,6 +391,12 @@ def main():
     flux.Destroy()
 
     cities.Destroy()
+
+    borders = shp_driver.CreateDataSource('output/borders.shp')
+    borders_layer = borders.CreateLayer('layer', wgs84)
+    calculate_borders(borders_layer)
+    borders.Destroy()
+
     print 'done'
 
 
