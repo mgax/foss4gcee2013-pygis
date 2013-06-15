@@ -314,6 +314,7 @@ def load_parks_data():
 def calculate_hikers(cities_layer, flux_layer, population, parks_data,
                       max_distance):
     flux_layer_defn = flux_layer.GetLayerDefn()
+    hikers = defaultdict(int)
     for i in range(cities_layer.GetFeatureCount()):
         city = cities_layer.GetFeature(i)
         city_population = population[city.GetField('siruta')]
@@ -330,19 +331,42 @@ def calculate_hikers(cities_layer, flux_layer, population, parks_data,
 
             if distance < max_distance:
                 print '-->', park['name'], park_centroid
-                nearby_parks.append(park_centroid)
+                nearby_parks.append(park)
 
         if nearby_parks:  # do people have a park nearby?
             hiker_population = city_population * HIKER_FRACTION
             people_per_park = int(hiker_population / len(nearby_parks))
-            for destination in nearby_parks:
+            for park in nearby_parks:
+                park_centroid = park['centroid']
                 line_feature = ogr.Feature(flux_layer_defn)
                 line_feature.SetField('people', people_per_park)
                 line = ogr.Geometry(ogr.wkbLineString)
                 line.AddPoint(city_centroid.GetX(), city_centroid.GetY())
-                line.AddPoint(destination.GetX(), destination.GetY())
+                line.AddPoint(park_centroid.GetX(), park_centroid.GetY())
                 line_feature.SetGeometry(line)
                 flux_layer.CreateFeature(line_feature)
+                hikers[park['name']] += people_per_park
+
+    return dict(hikers)
+
+
+def calculate_density(parks_layer, densities_layer, hikers):
+
+    densities_layer_defn = densities_layer.GetLayerDefn()
+    for i in range(parks_layer.GetFeatureCount()):
+        park_in = parks_layer.GetFeature(i)
+        name = park_in.GetField('nume')
+        park_geom = park_in.GetGeometryRef()
+        area = park_geom.Area()
+        people = hikers.get(name, 0)
+        #density = float(D(people / (area / 10**6)).quantize(D('.01')))
+        density = people / (area / 10**6)
+        park_out = ogr.Feature(densities_layer_defn)
+        park_out.SetField('name', name)
+        park_out.SetField('visitors', people)
+        park_out.SetField('density', density)
+        park_out.SetGeometry(park_geom)
+        densities_layer.CreateFeature(park_out)
 
 
 def calculate_borders(borders_layer):
@@ -382,15 +406,24 @@ def main():
 
     cities = ogr.Open('input/ro_cities.shp')
     cities_layer = cities.GetLayer(0)
-
     flux = shp_driver.CreateDataSource('output/flux.shp')
     flux_layer = flux.CreateLayer('layer', wgs84)
     flux_layer.CreateField(ogr.FieldDefn('people', ogr.OFTReal))
-    calculate_hikers(cities_layer, flux_layer, population, parks_data,
-                     max_distance)
+    hikers = calculate_hikers(cities_layer, flux_layer, population, parks_data,
+                              max_distance)
     flux.Destroy()
-
     cities.Destroy()
+
+    parks = ogr.Open('input/ro_natparks.shp')
+    parks_layer = parks.GetLayer(0)
+    densities = shp_driver.CreateDataSource('output/densities.shp')
+    densities_layer = densities.CreateLayer('layer', stereo70)
+    densities_layer.CreateField(ogr.FieldDefn('name', ogr.OFTString))
+    densities_layer.CreateField(ogr.FieldDefn('visitors', ogr.OFTInteger))
+    densities_layer.CreateField(ogr.FieldDefn('density', ogr.OFTReal))
+    calculate_density(parks_layer, densities_layer, hikers)
+    densities.Destroy()
+    parks.Destroy()
 
     borders = shp_driver.CreateDataSource('output/borders.shp')
     borders_layer = borders.CreateLayer('layer', wgs84)
