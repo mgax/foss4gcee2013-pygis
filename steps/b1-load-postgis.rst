@@ -16,7 +16,6 @@ strings in the `WKT format`_ (well-known text).
         cursor.execute("SELECT name,ST_AsText(the_geom) "
                        "FROM ne_10m_admin_1_states_provinces_shp "
                        "WHERE iso_a2='RO'")
-        geometries = []
         for row in cursor:
             print row[0], row[1][:30]+'...'
 
