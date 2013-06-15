@@ -131,6 +131,7 @@ def calculate_borders(borders_layer):
 
 
 def main():
+    print "loading data"
     population = load_population_data()
     max_distance = int(sys.argv[1])
 
@@ -145,6 +146,7 @@ def main():
     cities = ogr.Open('input/ro_cities.shp')
     cities_layer = cities.GetLayer(0)
 
+    print "distributing hikers"
     flux = shp_driver.CreateDataSource('output/flux.shp')
     flux_layer = flux.CreateLayer('layer', wgs84)
     flux_layer.CreateField(ogr.FieldDefn('people', ogr.OFTInteger))
@@ -152,6 +154,7 @@ def main():
                               max_distance)
     flux.Destroy()
 
+    print "calculating hiker density"
     densities = shp_driver.CreateDataSource('output/densities.shp')
     densities_layer = densities.CreateLayer('layer', stereo70)
     densities_layer.CreateField(ogr.FieldDefn('name', ogr.OFTString))
@@ -160,6 +163,7 @@ def main():
     calculate_density(parks_layer, densities_layer, hikers)
     densities.Destroy()
 
+    print "calculating borders"
     borders = shp_driver.CreateDataSource('output/borders.shp')
     borders_layer = borders.CreateLayer('layer', wgs84)
     calculate_borders(borders_layer)
@@ -168,7 +172,7 @@ def main():
     cities.Destroy()
     parks.Destroy()
 
-    #print 'done'
+    print 'done'
 
 
 if __name__ == '__main__':
