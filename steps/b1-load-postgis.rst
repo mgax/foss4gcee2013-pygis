@@ -4,6 +4,13 @@ Load data from PostGIS. We only print the first 30 characters of each
 geometry since they are quite long. The geometries are fetched as plain
 strings in the `WKT format`_ (well-known text).
 
+The query contains a placeholder (``%s``) and an interpolation value
+(``"RO"``). The `psycopg2` library takes care of quoting the
+interpolated query arguments, in case they contain quotes or other
+`dangerous characters`_.
+
+.. _dangerous characters: http://xkcd.com/327/
+
 .. _wkt format: http://en.wikipedia.org/wiki/Well-known_text
 
 .. code:: python
