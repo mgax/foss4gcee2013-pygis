@@ -290,7 +290,8 @@ def workshop():
 
     for i in range(cities_layer.GetFeatureCount()):
         city = cities_layer.GetFeature(i)
-        print city.GetField('uat_name_n')
+        city_geom = city.GetGeometryRef()
+        print city.GetField('uat_name_n'), city_geom.Centroid()
 
     cities.Destroy()
     print 'done'
