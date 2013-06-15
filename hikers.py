@@ -310,24 +310,8 @@ def load_parks_data():
     return parks_data
 
 
-def main():
-    # calculate centroids & bounding boxes for cities
-    population = load_population_data()
-
-    parks_data = load_parks_data()
-
-    if os.path.isdir('output'):
-        shutil.rmtree('output')
-    os.mkdir('output')
-
-    cities = ogr.Open('input/ro_cities.shp')
-    cities_layer = cities.GetLayer(0)
-
-    flux = shp_driver.CreateDataSource('output/flux.shp')
-    flux_layer = flux.CreateLayer('layer', wgs84)
-    flux_layer.CreateField(ogr.FieldDefn('people', ogr.OFTReal))
+def calculate_hikers(cities_layer, flux_layer, population, parks_data):
     flux_layer_defn = flux_layer.GetLayerDefn()
-
     for i in range(cities_layer.GetFeatureCount()):
         city = cities_layer.GetFeature(i)
         city_population = population[city.GetField('siruta')]
@@ -358,7 +342,26 @@ def main():
                 line_feature.SetGeometry(line)
                 flux_layer.CreateFeature(line_feature)
 
+
+def main():
+    # calculate centroids & bounding boxes for cities
+    population = load_population_data()
+
+    parks_data = load_parks_data()
+
+    if os.path.isdir('output'):
+        shutil.rmtree('output')
+    os.mkdir('output')
+
+    cities = ogr.Open('input/ro_cities.shp')
+    cities_layer = cities.GetLayer(0)
+
+    flux = shp_driver.CreateDataSource('output/flux.shp')
+    flux_layer = flux.CreateLayer('layer', wgs84)
+    flux_layer.CreateField(ogr.FieldDefn('people', ogr.OFTReal))
+    calculate_hikers(cities_layer, flux_layer, population, parks_data)
     flux.Destroy()
+
     cities.Destroy()
     print 'done'
 
