@@ -5,6 +5,7 @@ Save hiker lines as shapefile.
 ::
 
     import os
+    import shutil
     shp_driver = ogr.GetDriverByName('ESRI Shapefile')
 
     def calculate_hikers(cities_layer, flux_layer, population, parks_data):

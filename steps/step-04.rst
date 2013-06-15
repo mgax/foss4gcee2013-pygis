@@ -4,6 +4,14 @@ Calculate and store park centroids.
 
 ::
 
+    import osr
+
+    stereo70 = osr.SpatialReference()
+    stereo70.ImportFromEPSG(31700)
+    wgs84 = osr.SpatialReference()
+    wgs84.ImportFromEPSG(4326)
+    stereo70_to_wgs84 = osr.CoordinateTransformation(stereo70, wgs84)
+
     def load_parks_data(parks_layer):
         parks_data = []
         for i in range(parks_layer.GetFeatureCount()):

@@ -4,6 +4,8 @@ Save number of hikers who go to each park.
 
 ::
 
+    from collections import defaultdict
+
     def calculate_hikers(...):
         hikers = defaultdict(int)
         for i in range(cities_layer.GetFeatureCount()):
