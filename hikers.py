@@ -32,9 +32,7 @@ def load_population_data():
     return population
 
 
-def load_parks_data():
-    parks = ogr.Open('input/ro_natparks.shp')
-    parks_layer = parks.GetLayer(0)
+def load_parks_data(parks_layer):
     parks_data = []
     for i in range(parks_layer.GetFeatureCount()):
         park = parks_layer.GetFeature(i)
@@ -44,7 +42,6 @@ def load_parks_data():
             'centroid': park_centroid,
             'name': park.GetField('nume'),
         })
-    parks.Destroy()
     return parks_data
 
 
@@ -135,25 +132,26 @@ def calculate_borders(borders_layer):
 
 def main():
     population = load_population_data()
-    parks_data = load_parks_data()
     max_distance = int(sys.argv[1])
 
     if os.path.isdir('output'):
         shutil.rmtree('output')
     os.mkdir('output')
 
+    parks = ogr.Open('input/ro_natparks.shp')
+    parks_layer = parks.GetLayer(0)
+    parks_data = load_parks_data(parks_layer)
+
     cities = ogr.Open('input/ro_cities.shp')
     cities_layer = cities.GetLayer(0)
+
     flux = shp_driver.CreateDataSource('output/flux.shp')
     flux_layer = flux.CreateLayer('layer', wgs84)
     flux_layer.CreateField(ogr.FieldDefn('people', ogr.OFTInteger))
     hikers = calculate_hikers(cities_layer, flux_layer, population, parks_data,
                               max_distance)
     flux.Destroy()
-    cities.Destroy()
 
-    parks = ogr.Open('input/ro_natparks.shp')
-    parks_layer = parks.GetLayer(0)
     densities = shp_driver.CreateDataSource('output/densities.shp')
     densities_layer = densities.CreateLayer('layer', stereo70)
     densities_layer.CreateField(ogr.FieldDefn('name', ogr.OFTString))
@@ -161,12 +159,14 @@ def main():
     densities_layer.CreateField(ogr.FieldDefn('density', ogr.OFTReal))
     calculate_density(parks_layer, densities_layer, hikers)
     densities.Destroy()
-    parks.Destroy()
 
     borders = shp_driver.CreateDataSource('output/borders.shp')
     borders_layer = borders.CreateLayer('layer', wgs84)
     calculate_borders(borders_layer)
     borders.Destroy()
+
+    cities.Destroy()
+    parks.Destroy()
 
     print 'done'
 
