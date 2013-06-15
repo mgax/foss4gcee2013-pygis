@@ -55,7 +55,7 @@ def calculate_hikers(cities_layer, flux_layer, population, parks_data,
         city_geom = city.GetGeometryRef()
         city_centroid = city_geom.Centroid()
         city_centroid.Transform(stereo70_to_wgs84)
-        print city.GetField('uat_name_n'), city_population, city_centroid
+        #print city.GetField('uat_name_n'), city_population, city_centroid
         nearby_parks = []
         for park in parks_data:
             park_centroid = park['centroid']
@@ -64,7 +64,7 @@ def calculate_hikers(cities_layer, flux_layer, population, parks_data,
                 park_centroid.GetX(), park_centroid.GetY())
 
             if distance < max_distance:
-                print '-->', park['name'], park_centroid
+                #print '-->', park['name'], park_centroid
                 nearby_parks.append(park)
 
         if nearby_parks:  # do people have a park nearby?
@@ -168,10 +168,8 @@ def main():
     cities.Destroy()
     parks.Destroy()
 
-    print 'done'
+    #print 'done'
 
 
 if __name__ == '__main__':
-    #postgis_query()
     main()
-
