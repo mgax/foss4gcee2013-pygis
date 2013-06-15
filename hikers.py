@@ -103,8 +103,9 @@ def calculate_density(parks_layer, densities_layer, hikers):
         densities_layer.CreateFeature(park_out)
 
 
-def calculate_borders(borders_layer, db):
-    cursor = db.cursor()
+def calculate_borders(borders_layer):
+    conn = psycopg2.connect(dbname='natural_earth2', user='user')
+    cursor = conn.cursor()
     cursor.execute("SELECT name,ST_AsText(the_geom) "
                    "FROM ne_10m_admin_1_states_provinces_shp "
                    "WHERE iso_a2='RO'")
@@ -126,6 +127,8 @@ def calculate_borders(borders_layer, db):
             border_feature.SetGeometry(ogr.CreateGeometryFromWkt(wkt))
             borders_layer.CreateFeature(border_feature)
 
+    conn.close()
+
 
 def main():
     population = load_population_data()
@@ -141,8 +144,6 @@ def main():
 
     cities = ogr.Open('input/ro_cities.shp')
     cities_layer = cities.GetLayer(0)
-
-    db = psycopg2.connect(dbname='natural_earth2', user='user')
 
     flux = shp_driver.CreateDataSource('output/flux.shp')
     flux_layer = flux.CreateLayer('layer', wgs84)
@@ -161,10 +162,9 @@ def main():
 
     borders = shp_driver.CreateDataSource('output/borders.shp')
     borders_layer = borders.CreateLayer('layer', wgs84)
-    calculate_borders(borders_layer, db)
+    calculate_borders(borders_layer)
     borders.Destroy()
 
-    db.close()
     cities.Destroy()
     parks.Destroy()
 
