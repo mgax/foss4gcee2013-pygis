@@ -1,4 +1,5 @@
 import os
+import sys
 import csv
 from collections import defaultdict
 from decimal import Decimal as D
@@ -310,7 +311,8 @@ def load_parks_data():
     return parks_data
 
 
-def calculate_hikers(cities_layer, flux_layer, population, parks_data):
+def calculate_hikers(cities_layer, flux_layer, population, parks_data,
+                      max_distance):
     flux_layer_defn = flux_layer.GetLayerDefn()
     for i in range(cities_layer.GetFeatureCount()):
         city = cities_layer.GetFeature(i)
@@ -326,7 +328,7 @@ def calculate_hikers(cities_layer, flux_layer, population, parks_data):
                 city_centroid.GetX(), city_centroid.GetY(),
                 park_centroid.GetX(), park_centroid.GetY())
 
-            if distance < MAX_LAZINESS_DISTANCE:
+            if distance < max_distance:
                 print '-->', park['name'], park_centroid
                 nearby_parks.append(park_centroid)
 
@@ -346,8 +348,8 @@ def calculate_hikers(cities_layer, flux_layer, population, parks_data):
 def main():
     # calculate centroids & bounding boxes for cities
     population = load_population_data()
-
     parks_data = load_parks_data()
+    max_distance = int(sys.argv[1])
 
     if os.path.isdir('output'):
         shutil.rmtree('output')
@@ -359,7 +361,8 @@ def main():
     flux = shp_driver.CreateDataSource('output/flux.shp')
     flux_layer = flux.CreateLayer('layer', wgs84)
     flux_layer.CreateField(ogr.FieldDefn('people', ogr.OFTReal))
-    calculate_hikers(cities_layer, flux_layer, population, parks_data)
+    calculate_hikers(cities_layer, flux_layer, population, parks_data,
+                     max_distance)
     flux.Destroy()
 
     cities.Destroy()
