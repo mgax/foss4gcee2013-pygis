@@ -311,13 +311,17 @@ def workshop():
         })
     parks.Destroy()
 
-    cities = ogr.Open('input/ro_cities.shp')
-    cities_layer = cities.GetLayer(0)
     if os.path.isdir('output'):
         shutil.rmtree('output')
     os.mkdir('output')
+
+    cities = ogr.Open('input/ro_cities.shp')
+    cities_layer = cities.GetLayer(0)
+
     flux = shp_driver.CreateDataSource('output/flux.shp')
     flux_layer = flux.CreateLayer('layer', wgs84)
+    flux_layer.CreateField(ogr.FieldDefn('people', ogr.OFTReal))
+    flux_layer_defn = flux_layer.GetLayerDefn()
 
     for i in range(cities_layer.GetFeatureCount()):
         city = cities_layer.GetFeature(i)
@@ -326,6 +330,7 @@ def workshop():
         city_centroid = city_geom.Centroid()
         city_centroid.Transform(stereo70_to_wgs84)
         print city.GetField('uat_name_n'), city_population, city_centroid
+        nearby_parks = []
         for park in parks_data:
             park_centroid = park['centroid']
             (angle1, angle2, distance) = geod.inv(
@@ -334,6 +339,19 @@ def workshop():
 
             if distance < MAX_LAZINESS_DISTANCE:
                 print '-->', park['name'], park_centroid
+                nearby_parks.append(park_centroid)
+
+        if nearby_parks:  # do people have a park nearby?
+            hiker_population = city_population * HIKER_FRACTION
+            people_per_park = int(hiker_population / len(nearby_parks))
+            for destination in nearby_parks:
+                line_feature = ogr.Feature(flux_layer_defn)
+                line_feature.SetField('people', people_per_park)
+                line = ogr.Geometry(ogr.wkbLineString)
+                line.AddPoint(city_centroid.GetX(), city_centroid.GetY())
+                line.AddPoint(destination.GetX(), destination.GetY())
+                line_feature.SetGeometry(line)
+                flux_layer.CreateFeature(line_feature)
 
     flux.Destroy()
     cities.Destroy()
