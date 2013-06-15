@@ -2,7 +2,7 @@ Step A8 - script arguments
 ==========================
 Parametrize the script.
 
-::
+.. code:: python
 
     import sys
 

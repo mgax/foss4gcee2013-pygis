@@ -2,7 +2,7 @@ Step A2 - read CSV data for population
 ======================================
 Load CSV data.
 
-::
+.. code:: python
 
     import csv
 

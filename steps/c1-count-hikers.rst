@@ -2,7 +2,7 @@ Step C1 - count hikers per park
 ===============================
 Save number of hikers who go to each park.
 
-::
+.. code:: python
 
     from collections import defaultdict
 

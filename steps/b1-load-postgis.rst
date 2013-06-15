@@ -2,7 +2,7 @@ Step B1 - load from PostGIS
 ===========================
 Load data from PostGIS.
 
-::
+.. code:: python
 
     import psycopg2
 

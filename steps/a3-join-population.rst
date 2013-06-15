@@ -2,7 +2,7 @@ Step A3 - join with population
 ==============================
 Join cities with population data.
 
-::
+.. code:: python
 
     def calculate_hikers(cities_layer, population):
         for i in range(cities_layer.GetFeatureCount()):

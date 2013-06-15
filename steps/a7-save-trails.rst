@@ -2,7 +2,7 @@ Step A7 - save hiker trails
 ===========================
 Save hiker lines as shapefile.
 
-::
+.. code:: python
 
     import os
     import shutil

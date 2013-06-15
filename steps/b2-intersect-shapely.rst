@@ -2,7 +2,7 @@ Step B2 - intersect using Shapely
 =================================
 Intersect polygons using Shapely.
 
-::
+.. code:: python
 
     import shapely.wkt
 

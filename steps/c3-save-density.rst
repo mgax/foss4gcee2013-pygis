@@ -2,7 +2,7 @@ Step C3 - save layer with density data
 ======================================
 Save layer with park densities.
 
-::
+.. code:: python
 
     def calculate_density(parks_layer, densities_layer, hikers):
         densities_layer_defn = densities_layer.GetLayerDefn()

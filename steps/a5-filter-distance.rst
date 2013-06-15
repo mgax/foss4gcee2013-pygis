@@ -2,7 +2,7 @@ Step A5 - filter by distance
 ============================
 Calculate distances; only print nearby parks.
 
-::
+.. code:: python
 
     import pyproj
     geod = pyproj.Geod(ellps='WGS84')

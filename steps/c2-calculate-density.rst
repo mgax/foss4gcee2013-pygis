@@ -2,7 +2,7 @@ Step C2 - calculate density
 ===========================
 Calculate hiker density for each park.
 
-::
+.. code:: python
 
     def calculate_density(parks_layer, hikers):
         for i in range(parks_layer.GetFeatureCount()):

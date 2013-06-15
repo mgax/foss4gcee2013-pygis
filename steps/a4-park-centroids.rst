@@ -2,7 +2,7 @@ Step A4 - park centroids
 ========================
 Calculate and store park centroids.
 
-::
+.. code:: python
 
     import osr
 

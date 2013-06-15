@@ -2,7 +2,7 @@ Step B3 - save borders
 ======================
 Save borders to shapefile.
 
-::
+.. code:: python
 
     def calculate_borders():
         # ...

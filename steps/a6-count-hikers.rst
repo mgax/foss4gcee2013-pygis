@@ -2,7 +2,7 @@ Step A6 - count hikers
 ======================
 Count how many people go hiking from each city to each park.
 
-::
+.. code:: python
 
     def calculate_hikers(cities_layer, population, parks_data):
         hiker_fraction = 0.01  # 1%
