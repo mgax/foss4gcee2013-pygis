@@ -2,6 +2,8 @@
 FOSS4G-CEE-2013 Python-GIS workshop
 ===================================
 
+http://mgax.github.io/foss4gcee2013-pygis/
+
 Workshop
 ~~~~~~~~
 * OSGeo Live: http://live.osgeo.org/en/index.html
