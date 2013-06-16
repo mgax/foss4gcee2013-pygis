@@ -14,3 +14,5 @@ FOSS4G-CEE-2013 Python-GIS workshop
 * "Python Geospatial Development" book, Erik Westra:
   http://www.packtpub.com/python-geospatial-development/book
   (2nd edition just out)
+* The GIS Stack Exchange: http://gis.stackexchange.com/
+* Last but not least, https://www.google.com/
