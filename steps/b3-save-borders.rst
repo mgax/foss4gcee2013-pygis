@@ -11,7 +11,7 @@ Save borders to shapefile.
     wgs84.ImportFromEPSG(4326)
     shp_driver = ogr.GetDriverByName('ESRI Shapefile')
 
-    def calculate_borders():
+    def calculate_borders(borders_layer):
         # ...
         borders_layer_defn = borders_layer.GetLayerDefn()
         for a, geom_a in enumerate(geometries):
