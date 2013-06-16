@@ -2,11 +2,25 @@
 FOSS4G-CEE-2013 Python-GIS workshop
 ===================================
 
-* Workshop steps:
-  https://github.com/mgax/foss4gcee2013-pygis/tree/master/steps
+Workshop
+~~~~~~~~
+* OSGeo Live: http://live.osgeo.org/en/index.html
 * Workshop data archive:
   https://mgax.github.io/foss4gcee2013-pygis/pygis-workshop.zip
-* OSGeo Live: http://live.osgeo.org/en/index.html
+* Workshop steps:
+  https://github.com/mgax/foss4gcee2013-pygis/tree/master/steps
+* setup::
+
+    sudo apt-get install gedit gedit-plugins
+    cd ~/Desktop
+    curl -O http://mgax.github.io/foss4gcee2013-pygis/pygis-workshop.zip
+    unzip pygis-workshop.zip
+* The complete program:
+  https://github.com/mgax/foss4gcee2013-pygis/tree/master/hikers.py
+
+
+Further reading
+~~~~~~~~~~~~~~~
 * Python guide: http://docs.python-guide.org/en/latest/
 * Resources for learning Python:
   http://docs.python-guide.org/en/latest/intro/learning.html
