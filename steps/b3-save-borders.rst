@@ -4,6 +4,13 @@ Save borders to shapefile.
 
 .. code:: python
 
+    import ogr
+    import osr
+
+    wgs84 = osr.SpatialReference()
+    wgs84.ImportFromEPSG(4326)
+    shp_driver = ogr.GetDriverByName('ESRI Shapefile')
+
     def calculate_borders():
         # ...
         borders_layer_defn = borders_layer.GetLayerDefn()

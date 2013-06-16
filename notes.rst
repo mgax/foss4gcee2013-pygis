@@ -67,3 +67,4 @@ final
 - we write main() and other functions so we can use this code as a module
   in another script; the functions are reusable!
 - python2 vs python3
+- show again github repo & list of references
