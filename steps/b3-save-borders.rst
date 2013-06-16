@@ -4,6 +4,8 @@ Save borders to shapefile.
 
 .. code:: python
 
+    import os
+    import shutil
     import ogr
     import osr
 
@@ -23,6 +25,9 @@ Save borders to shapefile.
                 borders_layer.CreateFeature(border_feature)
 
     def main():
+        if os.path.isdir('output'):
+            shutil.rmtree('output')
+        os.mkdir('output')
         # ...
         borders = shp_driver.CreateDataSource('output/borders.shp')
         borders_layer = borders.CreateLayer('layer', wgs84)
