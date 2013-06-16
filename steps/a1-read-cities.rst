@@ -10,6 +10,7 @@ readable later on.
     def calculate_hikers(cities_layer):
         for i in range(cities_layer.GetFeatureCount()):
             city = cities_layer.GetFeature(i)
+            city_geom = city.GetGeometryRef()
             city_centroid = city_geom.Centroid()
             print city.GetField('uat_name_n'), city_centroid
 
